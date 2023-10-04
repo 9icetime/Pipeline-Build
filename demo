@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+    stages {
+        stage('checkout') {
+	   steps {
+		git url: 'https://github.com/9icetime/Pipeline-Build.git'
+		
+       }
+       
+    }
+     stage('osas-compile') {
+	   steps {
+                sh "echo we are compiling the code"
+		sh "mvn compile"
+          
+        }		
+    }
+  
+    stage('osas-testing') {
+	   steps {
+                sh "echo we are testing the code"
+		sh "mvn test"
+          
+        }		
+    }    
+        
+      stage('osas-QA') {
+	   steps {
+        sh "echo we are checking the quality of the code"
+		sh "mvn pmd:pmd"
+		recordIssues(tools: [pmdParser()])
+     
+	   }		
+    }    
+     
+     
+      stage('osas-package') {
+	   steps {
+        sh "echo we are converting the code package"
+		sh "mvn package"
+		
+     
+	   }		
+    }       
+        
+    }
+ 
+}
